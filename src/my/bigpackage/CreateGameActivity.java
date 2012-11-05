@@ -11,6 +11,7 @@ import java.net.URLConnection;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +21,6 @@ import android.widget.Toast;
 
 public class CreateGameActivity extends Activity
 {
-	
 	private Context MainContext;
 	
 	private Button CreateGameB;
@@ -64,7 +64,7 @@ public class CreateGameActivity extends Activity
 	        URL url;
 			try
 			{
-				url = new URL("http://75.135.194.155/cs/game/test.php?action=create");
+				url = new URL("http://" + MainContext.getResources().getString(R.string.ip_address) + "/cs/game/test.php?action=create");
 				URLConnection conn = url.openConnection();
 				conn.setDoOutput(true);
 				OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
@@ -98,14 +98,18 @@ public class CreateGameActivity extends Activity
 				builder.setMessage("Game '" + result + "' successfully created!")
 					   .setCancelable(false)
 					   .setPositiveButton("OK", null);
+				builder.create().show();
+				
+				Intent myIntent = new Intent(CreateGameActivity.this, CreatorWaitActivity.class);
+        		CreateGameActivity.this.startActivity(myIntent);
 			}
 			else
 			{
 				builder.setMessage("Unable to create new game.")
 				   .setCancelable(false)
 				   .setPositiveButton("OK", null);
+				builder.create().show();
 			}
-			builder.create().show();
 		}
     }
 }

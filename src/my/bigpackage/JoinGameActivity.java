@@ -1,6 +1,12 @@
 package my.bigpackage;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 import javax.xml.parsers.SAXParser;
@@ -10,12 +16,12 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -81,7 +87,7 @@ public class JoinGameActivity extends Activity
 			SAXParserFactory saxPF = SAXParserFactory.newInstance();
 			SAXParser saxP = saxPF.newSAXParser();
 			XMLReader xmlR = saxP.getXMLReader();
-			URL url = new URL("http://75.135.194.155/cs/game/test.php?action=getActive");
+			URL url = new URL("http://" + MainContext.getResources().getString(R.string.ip_address) + "/cs/game/test.php?action=getActive");
 			xmlR.setContentHandler(new XMLHandler()
 			{
 				private String _ElementValue;
@@ -136,23 +142,54 @@ public class JoinGameActivity extends Activity
 			activeGames[i] = this._Games.get(i).GetName();
 		}
 		
-		_Adapter = new ArrayAdapter<String>(MainContext, 
-				R.layout.active_game_list_item,
-				activeGames);
-		
-		ActiveGameLV.setAdapter(_Adapter);
-		
-		_Adapter.notifyDataSetChanged();
-		
-//		ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainContext, 
+//		_Adapter = new ArrayAdapter<String>(MainContext, 
 //				R.layout.active_game_list_item,
 //				activeGames);
 //		
-//		ActiveGameLV.setAdapter(adapter);
+//		ActiveGameLV.setAdapter(_Adapter);
+//		
+//		_Adapter.notifyDataSetChanged();
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainContext, 
+				R.layout.active_game_list_item,
+				activeGames);
+		
+		ActiveGameLV.setAdapter(adapter);
 	}
 	
 	private void joinGame(Game g)
 	{
-		Toast.makeText(MainContext, "JOINING GAME " + g.GetName(), Toast.LENGTH_LONG).show();
+		String data = String.format("gameID=%s&userID=%s", g.GetId(), 0);
+        
+        URL url;
+		try
+		{
+			url = new URL("http://" + MainContext.getResources().getString(R.string.ip_address) + "/cs/game/test.php?action=join");
+			URLConnection conn = url.openConnection();
+			conn.setDoOutput(true);
+			OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
+			osw.write(data);
+			osw.flush();
+			osw.close();
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String success = br.readLine();
+			
+			if (success != null && !success.equals("false"))
+			{
+				Intent myIntent = new Intent(JoinGameActivity.this, JoinerWaitActivity.class);
+				JoinGameActivity.this.startActivity(myIntent);
+			}
+			else
+			{
+				Toast.makeText(MainContext, "Unable to join game " + g.GetName(), Toast.LENGTH_LONG).show();
+			}
+		} catch (MalformedURLException e){
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

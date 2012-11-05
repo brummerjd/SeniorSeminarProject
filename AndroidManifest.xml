@@ -28,6 +28,12 @@
         <activity
             android:name=".JoinGameActivity"
             android:label="JoinGameActivity" />
+        <activity
+            android:name=".CreatorWaitActivity"
+            android:label="CreatorWaitActivity" />
+        <activity
+            android:name=".JoinerWaitActivity"
+            android:label="JoinerWaitActivity" />
     </application>
 
 </manifest>
