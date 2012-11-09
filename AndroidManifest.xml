@@ -34,6 +34,9 @@
         <activity
             android:name=".JoinerWaitActivity"
             android:label="JoinerWaitActivity" />
+        <activity
+            android:name=".PlayGameActivity"
+            android:label="PlayGameActivity" />
     </application>
 
 </manifest>

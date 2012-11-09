@@ -21,10 +21,11 @@
 	        android:textSize="18dp" />
         
         <TextView
+            android:id="@+id/countdownEvent_TextView"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:textSize="18dp"
-	        android:text=" seconds until game begins" />
+	        android:text=" seconds until game initializes" />
         
     </LinearLayout>
     

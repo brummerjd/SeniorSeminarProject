@@ -158,38 +158,16 @@ public class JoinGameActivity extends Activity
 	}
 	
 	private void joinGame(Game g)
-	{
-		String data = String.format("gameID=%s&userID=%s", g.GetId(), 0);
-        
-        URL url;
-		try
+	{	
+		String success = ServerCommunicator.URLGet(this, "join", String.format("gameID=%s&userID=%s", g.GetId(), 1));
+		if (success != null && !success.equals("false"))
 		{
-			url = new URL("http://" + MainContext.getResources().getString(R.string.ip_address) + "/cs/game/test.php?action=join");
-			URLConnection conn = url.openConnection();
-			conn.setDoOutput(true);
-			OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
-			osw.write(data);
-			osw.flush();
-			osw.close();
-			
-			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String success = br.readLine();
-			
-			if (success != null && !success.equals("false"))
-			{
-				Intent myIntent = new Intent(JoinGameActivity.this, JoinerWaitActivity.class);
-				JoinGameActivity.this.startActivity(myIntent);
-			}
-			else
-			{
-				Toast.makeText(MainContext, "Unable to join game " + g.GetName(), Toast.LENGTH_LONG).show();
-			}
-		} catch (MalformedURLException e){
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Intent myIntent = new Intent(JoinGameActivity.this, JoinerWaitActivity.class);
+			JoinGameActivity.this.startActivity(myIntent);
+		}
+		else
+		{
+			Toast.makeText(MainContext, "Unable to join game " + g.GetName(), Toast.LENGTH_LONG).show();
 		}
 	}
 }
