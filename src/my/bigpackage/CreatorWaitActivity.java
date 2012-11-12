@@ -12,10 +12,9 @@ import android.widget.Toast;
 
 public class CreatorWaitActivity extends Activity {
 	
-	private int _GameID;
+	private long _TimeUntilGame;
 	private CountDownTimer _Timer;
 	
-	private Button StartGameB;
 	private TextView TimeLeftTV;
 	private TextView CountdownEventTV;
 	
@@ -26,35 +25,27 @@ public class CreatorWaitActivity extends Activity {
         setContentView(R.layout.creator_wait);
         
         Intent i = this.getIntent();
-        this._GameID = i.getIntExtra("gameID", -1);
-        
-        this.StartGameB = (Button)this.findViewById(R.id.startGame_Button);
-        this.StartGameB.setOnClickListener(new View.OnClickListener()
-        {
-        	public void onClick(View v)
-        	{
-        		initializeGame();
-        	}
-        });
+        this._TimeUntilGame = i.getLongExtra("timeUntilGame", 30000);
         
         this.TimeLeftTV = (TextView)this.findViewById(R.id.timeLeft_TextView);
         
         this.CountdownEventTV = (TextView)this.findViewById(R.id.countdownEvent_TextView);
         
-        beginGameCountdownTimer();
+        this.beginGameCountdownTimer();
 	}
 	
 	private void beginGameCountdownTimer()
 	{
-		this._Timer = new CountDownTimer(30000, 1000)
+		this._Timer = new CountDownTimer(this._TimeUntilGame * 1000, 1000)
 		{
 			@Override
 			public void onFinish() {
 				initializeGame();
+				this.cancel();
 			}
 			@Override
 			public void onTick(long millisUntilFinished) {
-				TimeLeftTV.setText(Long.toString((millisUntilFinished / 1000) - 1));
+				TimeLeftTV.setText(Long.toString((millisUntilFinished / 1000)));
 			}
 		};
 		
@@ -63,21 +54,18 @@ public class CreatorWaitActivity extends Activity {
 	
 	private void initializeGame()
 	{
-		this._Timer.cancel();
-		String timeString = ServerCommunicator.URLGet(this, "setStartTime", String.format("gameID=%s", this._GameID));
-		
 		this.CountdownEventTV.setText(" seconds until game begins.");
 		
-		long timeUntilGame = (Long.parseLong(timeString) - (System.currentTimeMillis() / (long)1000)) * 1000;
-		CountDownTimer timer = new CountDownTimer(timeUntilGame, 1000)
+		CountDownTimer timer = new CountDownTimer(5000, 1000)
 		{
 			@Override
 			public void onFinish() {
 				startGame();
+				this.cancel();
 			}
 			@Override
 			public void onTick(long millisUntilFinished) {
-				TimeLeftTV.setText(Long.toString((millisUntilFinished / 1000) - 1));
+				TimeLeftTV.setText(Long.toString((millisUntilFinished / 1000)));
 			}
 		};
 		

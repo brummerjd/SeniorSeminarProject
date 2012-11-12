@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -159,15 +160,35 @@ public class JoinGameActivity extends Activity
 	
 	private void joinGame(Game g)
 	{	
-		String success = ServerCommunicator.URLGet(this, "join", String.format("gameID=%s&userID=%s", g.GetId(), 1));
-		if (success != null && !success.equals("false"))
+		String timeUntilGameString = ServerCommunicator.URLGet(this, "join", String.format("gameID=%s&userID=%s", g.GetId(), 1));
+		if (timeUntilGameString == null)
+		{
+			timeUntilGameString = "NONE";
+		}
+		
+		long timeUntilGame;
+		try
+		{
+			timeUntilGame = Long.parseLong(timeUntilGameString);	
+		}
+		catch (Exception exc)
+		{
+			timeUntilGame = -1;
+		}
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(MainContext);
+		if (timeUntilGame != -1)
 		{
 			Intent myIntent = new Intent(JoinGameActivity.this, JoinerWaitActivity.class);
+			myIntent.putExtra("timeUntilGame", timeUntilGame);
 			JoinGameActivity.this.startActivity(myIntent);
 		}
 		else
 		{
-			Toast.makeText(MainContext, "Unable to join game " + g.GetName(), Toast.LENGTH_LONG).show();
+			builder.setMessage("Unable to join game.")
+			   .setCancelable(false)
+			   .setPositiveButton("OK", null);
+			builder.create().show();
 		}
 	}
 }
