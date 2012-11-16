@@ -9,6 +9,8 @@ import android.widget.TextView;
 public class JoinerWaitActivity extends Activity {
 	
 	private long _TimeUntilGame;
+	private long _GameID;
+	private long _UserID;
 	private CountDownTimer _Timer;
 	
 	private TextView TimeLeftTV;
@@ -22,6 +24,8 @@ public class JoinerWaitActivity extends Activity {
         
         Intent i = this.getIntent();
         this._TimeUntilGame = i.getLongExtra("timeUntilGame", -1);
+        this._GameID = i.getLongExtra("gameID", -1);
+        this._UserID = i.getLongExtra("userID", -1);
         
         this.TimeLeftTV = (TextView)this.findViewById(R.id.timeLeft_TextView);
         
@@ -74,6 +78,8 @@ public class JoinerWaitActivity extends Activity {
 	private void startGame()
 	{
 		Intent myIntent = new Intent(JoinerWaitActivity.this, PlayGameActivity.class);
+		myIntent.putExtra("gameID", this._GameID);
+		myIntent.putExtra("userID", this._UserID);
 		JoinerWaitActivity.this.startActivity(myIntent);
 	}
 }

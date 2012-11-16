@@ -19,9 +19,10 @@ public final class R {
         public static final int countdownEvent_TextView=0x7f070003;
         public static final int createGame_Button=0x7f070000;
         public static final int createNewGame_Button=0x7f070006;
+        public static final int gameMessage_TextView=0x7f070008;
         public static final int gameName_EditText=0x7f070001;
         public static final int joinGame_Button=0x7f070007;
-        public static final int menu_settings=0x7f070008;
+        public static final int menu_settings=0x7f070009;
         public static final int refresh_Button=0x7f070004;
         public static final int timeLeft_TextView=0x7f070002;
     }

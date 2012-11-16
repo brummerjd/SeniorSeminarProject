@@ -160,27 +160,40 @@ public class JoinGameActivity extends Activity
 	
 	private void joinGame(Game g)
 	{	
-		String timeUntilGameString = ServerCommunicator.URLGet(this, "join", String.format("gameID=%s&userID=%s", g.GetId(), 1));
-		if (timeUntilGameString == null)
+		String timeAndIdString = ServerCommunicator.URLGet(this, "join", String.format("gameID=%s", g.GetId()));
+		if (timeAndIdString == null)
 		{
-			timeUntilGameString = "NONE";
+			timeAndIdString = "NONE,NONE";
 		}
 		
+		String[] timeAndId = timeAndIdString.split(",");
 		long timeUntilGame;
 		try
 		{
-			timeUntilGame = Long.parseLong(timeUntilGameString);	
+			timeUntilGame = Long.parseLong(timeAndId[0]);	
 		}
 		catch (Exception exc)
 		{
 			timeUntilGame = -1;
 		}
 		
+		long id;
+		try
+		{
+			id = Long.parseLong(timeAndId[1]);	
+		}
+		catch (Exception exc)
+		{
+			id = -1;
+		}
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(MainContext);
-		if (timeUntilGame != -1)
+		if (timeUntilGame != -1 && id != -1)
 		{
 			Intent myIntent = new Intent(JoinGameActivity.this, JoinerWaitActivity.class);
 			myIntent.putExtra("timeUntilGame", timeUntilGame);
+			myIntent.putExtra("gameID", g.GetId());
+			myIntent.putExtra("userID", id);
 			JoinGameActivity.this.startActivity(myIntent);
 		}
 		else

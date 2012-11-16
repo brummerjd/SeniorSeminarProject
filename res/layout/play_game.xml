@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     
-    <TextView 
+    <TextView
+        android:id="@+id/gameMessage_TextView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="24dp"

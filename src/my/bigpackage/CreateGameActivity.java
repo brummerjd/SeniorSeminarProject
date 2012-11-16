@@ -60,32 +60,56 @@ public class CreateGameActivity extends Activity
 		@Override
 		protected String doInBackground(String... arg0)
 		{
-			String timeUntilGameString = ServerCommunicator.URLGet(MainContext, "create", String.format("gameName=%s", GameNameET.getText()));
+			String timeAndIdsString = ServerCommunicator.URLGet(MainContext, "create", String.format("gameName=%s", GameNameET.getText()));
 			
-			if (timeUntilGameString != null)
+			if (timeAndIdsString != null)
 			{
-				return timeUntilGameString;
+				return timeAndIdsString;
 			}
 			return "";
 		}
 		
 		protected void onPostExecute(String result)
 		{
+			String[] timeAndIds = result.split(",");
+			
 			long timeUntilGame;
 			try
 			{
-				timeUntilGame = Long.parseLong(result);	
+				timeUntilGame = Long.parseLong(timeAndIds[0]);	
 			}
 			catch (Exception exc)
 			{
 				timeUntilGame = -1;
 			}
 			
+			long gameID;
+			try
+			{
+				gameID = Long.parseLong(timeAndIds[2]);	
+			}
+			catch (Exception exc)
+			{
+				gameID = -1;
+			}
+			
+			long userID;
+			try
+			{
+				userID = Long.parseLong(timeAndIds[1]);	
+			}
+			catch (Exception exc)
+			{
+				userID = -1;
+			}
+			
 			AlertDialog.Builder builder = new AlertDialog.Builder(MainContext);
-			if (timeUntilGame != -1)
+			if (timeUntilGame != -1 && gameID != -1 && userID != -1)
 			{
 				Intent myIntent = new Intent(CreateGameActivity.this, CreatorWaitActivity.class);
 				myIntent.putExtra("timeUntilGame", timeUntilGame);
+				myIntent.putExtra("gameID", gameID);
+				myIntent.putExtra("userID", userID);
         		CreateGameActivity.this.startActivity(myIntent);
 			}
 			else

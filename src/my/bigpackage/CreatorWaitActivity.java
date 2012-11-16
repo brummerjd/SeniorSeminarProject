@@ -13,6 +13,8 @@ import android.widget.Toast;
 public class CreatorWaitActivity extends Activity {
 	
 	private long _TimeUntilGame;
+	private long _GameID;
+	private long _UserID;
 	private CountDownTimer _Timer;
 	
 	private TextView TimeLeftTV;
@@ -26,6 +28,8 @@ public class CreatorWaitActivity extends Activity {
         
         Intent i = this.getIntent();
         this._TimeUntilGame = i.getLongExtra("timeUntilGame", 30000);
+        this._GameID = i.getLongExtra("gameID", -1);
+        this._UserID = i.getLongExtra("userID", -1);
         
         this.TimeLeftTV = (TextView)this.findViewById(R.id.timeLeft_TextView);
         
@@ -75,6 +79,8 @@ public class CreatorWaitActivity extends Activity {
 	private void startGame()
 	{
 		Intent myIntent = new Intent(CreatorWaitActivity.this, PlayGameActivity.class);
+		myIntent.putExtra("gameID", this._GameID);
+		myIntent.putExtra("userID", this._UserID);
 		CreatorWaitActivity.this.startActivity(myIntent);
 	}
 }
