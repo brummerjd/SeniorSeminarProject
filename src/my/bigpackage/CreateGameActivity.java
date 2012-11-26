@@ -86,7 +86,8 @@ public class CreateGameActivity extends Activity
 			long gameID;
 			try
 			{
-				gameID = Long.parseLong(timeAndIds[2]);	
+				gameID = Long.parseLong(timeAndIds[2]);
+				Log.e("TAG", Long.toString(gameID));
 			}
 			catch (Exception exc)
 			{

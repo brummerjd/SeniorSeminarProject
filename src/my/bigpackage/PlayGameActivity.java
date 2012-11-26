@@ -7,6 +7,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ public class PlayGameActivity extends Activity implements SensorEventListener {
 	
 	private SensorManager _SensorManager;
 	private Sensor _Accelerometer;
+	private MediaPlayer _Player;
 	
 	private TextView GameMessageTV;
 	
@@ -36,6 +38,8 @@ public class PlayGameActivity extends Activity implements SensorEventListener {
         this._Accelerometer = this._SensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         
         this._SensorManager.registerListener(this, this._Accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        
+        this._Player = MediaPlayer.create(this, R.raw.explosion);
         
         this.GameMessageTV = (TextView)this.findViewById(R.id.gameMessage_TextView);
 	}
@@ -59,6 +63,11 @@ public class PlayGameActivity extends Activity implements SensorEventListener {
 	
 	public void loseGame()
 	{
+		this._Accelerometer = null;
+		
+		this._Player.start();
+		this.GameMessageTV.setText("You lose!");
+		
 		String status = ServerCommunicator.URLGet(this, "lose", String.format("gameID=%s&userID=%s", this._GameID, this._UserID));
 		
 		if (status.equals("WINNER"))
